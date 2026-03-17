@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Backend Builder</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    input, textarea {
+      width: 90%;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚀 AI Backend Demo</h1>
+
+  <textarea id="prompt" placeholder="Describe backend..."></textarea>
+
+  <input id="conn" placeholder="Paste Supabase connection string" />
+
+  <br><br>
+  <button onclick="send()">Build</button>
+
+  <p id="result"></p>
+
+<script>
+async function send() {
+  const prompt = document.getElementById("prompt").value;
+  const connectionString = document.getElementById("conn").value;
+
+  document.getElementById("result").innerText = "Processing...";
+
+  try {
+    const res = await fetch("/create-table", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt, connectionString })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById("result").innerText = "✅ " + data.message;
+    } else {
+      document.getElementById("result").innerText = "❌ " + data.error;
+    }
+
+  } catch (err) {
+    document.getElementById("result").innerText = "❌ Failed to fetch";
+  }
+}
+</script>
+
+</body>
+</html>
